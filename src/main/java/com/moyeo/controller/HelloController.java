@@ -10,4 +10,9 @@ public class HelloController {
     public String hello() {
         return "통신 성공^____^";
     }
+
+    @GetMapping("/api/test")
+    public String test() {
+        return "test";
+    }
 }
