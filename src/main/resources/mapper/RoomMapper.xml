@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moyeo.mapper.RoomMapper">
+
+    <resultMap id="RoomResultMap" type="com.moyeo.VO.RoomVO">
+        <id property="roomId" column="room_id"/>
+        <result property="roomName" column="room_nm"/>
+        <result property="roomType" column="room_type_cd"/>
+        <result property="roomQnum" column="room_qst_num"/>
+
+        <association property="userInfo" javaType="com.moyeo.VO.UserVO">
+            <result property="userName" column="user_nm"/>
+            <result property="userImg" column="user_img"/>
+            <result property="userColor" column="user_color"/>
+        </association>
+    </resultMap>
+
+    <insert id="insertRoom" useGeneratedKeys="true" keyProperty="roomId">
+        /*com.moyeo.mapper.RoomMapper.insertRoom*/
+        INSERT INTO ROOM_MAST (
+                    ROOM_NM
+                  , ROOM_TYPE_CD
+                  , ROOM_QST_NUM
+                  , PEOPLE_NUM
+                  , ROOM_USE_YN
+        ) VALUES (  #{roomNm}
+                  , #{roomTypeCd}
+                  , #{roomQnum}
+                  , 1
+                  , 'Y'
+        )
+    </insert>
+
+
+    <insert id="insertRoomPassword">
+        /*com.moyeo.mapper.RoomMapper.insertRoomPassword*/
+        INSERT INTO ROOM_PW_MAST (
+                    ROOM_ID
+                  , FIRST_WORD
+                  , SECOND_WORD
+                  , THIRD_WORD
+        ) VALUES (  #{roomId}
+                  , #{firstWord}
+                  , #{secondWord}
+                  , #{thirdWord}
+        )
+    </insert>
+
+    <insert id="insertUserInfo" useGeneratedKeys="true" keyProperty="userId">
+        /*com.moyeo.mapper.RoomMapper.insertUserInfo*/
+        INSERT INTO USER_MAST (
+                    USER_NM
+                  , USER_IMG
+                  , USER_COLOR
+        ) VALUES (  #{userName}
+                  , #{userImg}
+                  , #{userColor}
+        )
+    </insert>
+
+    <insert id="insertRoomUserMap">
+        /*com.moyeo.mapper.RoomMapper.insertRoomUserMap*/
+        INSERT INTO ROOM_USER_MAP (
+                    ROOM_ID
+                  , USER_ID
+                  , USER_SNO
+        ) VALUES (  #{roomId}
+                  , #{userId}
+                  , (SELECT COUNT(*) + 1
+                       FROM ROOM_MAST
+                      WHERE ROOM_ID = #{roomId}
+                    )
+        )
+    </insert>
+
+    <select id="selectRoomWithUser" resultMap="RoomResultMap">
+        /*com.moyeo.mapper.RoomMapper.insertRoom*/
+        SELECT RM.*, UM.*
+          FROM ROOM_MAST RM
+          JOIN ROOM_USER_MAP RUM
+            ON RUM.ROOM_ID = RM.ROOM_ID
+          LEFT JOIN USER_MAST UM
+            ON UM.USER_ID = RUM.USER_ID
+         WHERE RM.ROOM_ID = #{roomId}
+    </select>
+
+</mapper>
