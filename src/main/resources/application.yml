@@ -1,20 +1,3 @@
-springdoc:
-  api-docs:
-    path: /api-docs
-    groups:
-      enabled: true
-  cache:
-    disabled: true
-  packages-to-scan: com.moyeo
-  default-produces-media-type: application/json;charset=UTF-8
-  default-consumes-media-type: application/json;charset=UTF-8
-  version: V.0.0.1
-  swagger-ui:
-    enabled: true
-    operations-sorter: alpha
-    tags-sorter: alpha
-    path: /swagger.html
-
 # 서버포트설정
 server:
   port: 8080
@@ -24,19 +7,39 @@ spring:
   application:
     name: moyeo
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/db_moyeo?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    #hikari:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://localhost:3306/db_moyeo?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: user_moyeo
     password: moyeo!@3456
+    #driver-class-name: com.mysql.cj.jdbc.Driver
+    #url: jdbc:mysql://localhost:3306/db_moyeo?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    #username: user_moyeo
+    #password: moyeo!@3456
   thymeleaf:
     cache: false
+  main:
+    allow-bean-definition-overriding: true
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
-  # spring data jpa 설정
+logging:
+  level:
+    root: info
+    com.moyeo: debug
+    org.mybatis: debug
+
+    # log4jdbc 설정
+    jdbc.sqlonly: debug     # SQL 문장 출력
+    jdbc.sqltiming: trace   # 실행 시간 출력
+    jdbc.resultset: off     # ResultSet 출력 끔
+    jdbc.audit: off         # 트랜잭션/커넥션 로그 끔
+    jdbc.connection: off    # 커넥션 로그도 끄고 싶으면
+
+# spring data jpa 설정
 #  jpa:
 #    open-in-view: false
 #    show-sql: true

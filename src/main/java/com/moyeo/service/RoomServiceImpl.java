@@ -13,6 +13,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
@@ -27,7 +29,6 @@ public class RoomServiceImpl implements RoomService {
         room.setRoomNm(dto.getRoomName());
         room.setRoomTypeCd(dto.getRoomType());
         room.setRoomQnum(dto.getRoomQnum());
-        room.setNumPeople(dto.getNumPeople());
         roomMapper.insertRoom(room);
 
         // 채팅방 패스워드 정보
@@ -43,7 +44,11 @@ public class RoomServiceImpl implements RoomService {
         UserEntity user = new UserEntity();
         UserDTO userDto = dto.getUserInfo();
         user.setUserName(userDto.getUserName());
-        user.setUserImg(userDto.getUserImg());
+        //user.setUserImg(userDto.getUserImg());
+        // Img: 1~6 사이 랜덤 숫자
+        int imageNumber = new Random().nextInt(6) + 1;
+        user.setUserImg(imageNumber);
+
         user.setUserColor(userDto.getUserColor());
         roomMapper.insertUserInfo(user);
         // 채팅방 - 사용자정보 매핑
@@ -55,7 +60,6 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomVO getRoom(Long id) {
-        System.out.println("#####paramID: " + id);
         return roomMapper.selectRoomWithUser(id);
     }
 }

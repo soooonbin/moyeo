@@ -15,6 +15,5 @@ public class RoomDTO {
     private String roomName;
     private String roomType;
     private int roomQnum;
-    private int numPeople;
     private UserDTO userInfo;
 }

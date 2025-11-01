@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class UserEntity {
     private Long userId;
+    private Long roomId;
     private String userName;
     private int userImg;
     private String userColor;

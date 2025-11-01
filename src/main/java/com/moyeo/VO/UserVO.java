@@ -7,7 +7,8 @@ import lombok.Setter;
 @Setter
 public class UserVO {
     private Long roomId;
+    private Long userId;
     private String userName;
-    private String userImg;
+    private int userImg;
     private String userColor;
 }

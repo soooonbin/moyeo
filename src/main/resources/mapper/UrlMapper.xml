@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moyeo.mapper.UrlMapper">
+    <resultMap id="UrlResultMap" type="com.moyeo.VO.UrlVO">
+        <id property="id" column="url_id"/>
+        <result property="originalUrl" column="ori_url"/>
+        <result property="shortUrl" column="short_url"/>
+        <result property="regUser" column="reg_user"/>
+    </resultMap>
+
+    <!-- 원본 URL로 단축 URL 조회 -->
+    <select id="findShortUrlByOriginal" resultType="string">
+        SELECT short_url
+        FROM URL_MAST
+        WHERE ORI_URL = #{originalUrl}
+    </select>
+
+    <!-- 단축 URL로 엔티티 조회 -->
+    <select id="findByShortUrl" resultType="com.moyeo.entity.UrlEntity">
+        SELECT URL_ID    AS id,
+               ORI_URL   AS originalUrl,
+               SHORT_URL AS shortUrl,
+               REG_USER  AS regUser
+        FROM URL_MAST
+        WHERE SHORT_URL = #{shortUrl}
+    </select>
+
+    <!-- original_url 저장 -->
+    <insert id="insertOriginalUrl" parameterType="com.moyeo.entity.UrlEntity" useGeneratedKeys="true" keyProperty="id">
+        /*com.moyeo.mapper.UrlMapper.insertOriginalUrl*/
+        INSERT INTO URL_MAST (ORI_URL)
+        VALUES (#{originalUrl})
+    </insert>
+
+    <!-- 마지막 insert된 id 조회 -->
+    <select id="getLastInsertId" resultType="int">
+        SELECT LAST_INSERT_ID()
+    </select>
+
+    <!-- short_url 업데이트 -->
+    <update id="updateShortUrl">
+        /*com.moyeo.mapper.UrlMapper.updateShortUrl*/
+        UPDATE URL_MAST
+        SET SHORT_URL = #{shortUrl}
+        WHERE URL_ID = #{id}
+    </update>
+
+
+
+
+    <select id="findByLongUrl" parameterType="map" resultType="map">
+        /*com.moyeo.mapper.UrlMapper.findByLongUrl*/
+        SELECT URL_ID
+             , SHORT_URL
+             , ORI_URL
+             , REG_USER
+             , REG_DT
+          FROM URL_MAST
+         WHERE SHORT_URL = #{shortUrl}
+    </select>
+
+    <insert id="insertOriUrl" parameterType="map">
+        /*com.moyeo.mapper.UrlMapper.insertOriUrl*/
+        INSERT INTO URL_MAST
+        ( SHORT_URL
+        , ORI_URL
+        , REG_USER
+        ) VALUES (
+          #{shortUrl}
+        , #{oriUrl}
+        , #{regUser}
+       )
+    </insert>
+
+    <select id="selectUrlSeq" resultType="int">
+        SELECT MAX(URL_ID) + 1 AS URL_SEQ
+          FROM URL_MAST
+    </select>
+
+
+</mapper>
+
